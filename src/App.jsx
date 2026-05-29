@@ -155,41 +155,41 @@ function PrioritySelector({ value, onChange }) {
 }
 
 // ── Delete Confirmation Modal ─────────────────────────────────────────────────
-function DeleteModal({ order, onConfirm, onCancel, deleting }) {
+function DeleteModal({ order, onConfirm, onCancel, deleting, darkMode }) {
   return (
     <div style={{ position:"fixed", inset:0, zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}
       onClick={e => { if (e.target === e.currentTarget) onCancel(); }}>
       {/* Overlay */}
       <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.5)", backdropFilter:"blur(4px)" }} />
       {/* Modal — fondo blanco en light, gris oscuro en dark */}
-      <div style={{ position:"relative", background:"var(--modal-bg)", borderRadius:16, padding:"32px 28px", width:"100%", maxWidth:440, boxShadow:"0 24px 60px rgba(0,0,0,0.3)", border:"1px solid var(--border)", animation:"modalIn 0.2s ease" }}>
+      <div style={{ position:"relative", background:darkMode?"#1E2235":"#FFFFFF", borderRadius:16, padding:"32px 28px", width:"100%", maxWidth:440, boxShadow:"0 24px 60px rgba(0,0,0,0.3)", border:darkMode?"1px solid #292D45":"1px solid #E5E7EB", animation:"modalIn 0.2s ease" }}>
         {/* Cruz de cierre */}
         <button onClick={onCancel} disabled={deleting}
-          style={{ position:"absolute", top:14, right:14, background:"transparent", border:"none", cursor:"pointer", fontSize:18, color:"var(--muted)", lineHeight:1, padding:"4px 6px", borderRadius:6, transition:"all 0.15s" }}
-          onMouseEnter={e=>{e.currentTarget.style.background="var(--surface2)";e.currentTarget.style.color="var(--text)";}}
-          onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="var(--muted)";}}>
+          style={{ position:"absolute", top:14, right:14, background:"transparent", border:"none", cursor:"pointer", fontSize:18, color:darkMode?"#4A4E6A":"#9CA3AF", lineHeight:1, padding:"4px 6px", borderRadius:6, transition:"all 0.15s" }}
+          onMouseEnter={e=>{e.currentTarget.style.background=darkMode?"#252840":"#F3F4F6";e.currentTarget.style.color=darkMode?"#E4E6F0":"#111827";}}
+          onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color=darkMode?"#4A4E6A":"#9CA3AF";}}>
           ✕
         </button>
         {/* Icon */}
         <div style={{ width:52, height:52, borderRadius:14, background:"#FEF2F2", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, margin:"0 auto 20px" }}>
           🗑️
         </div>
-        <h3 style={{ fontSize:17, fontWeight:700, color:"var(--text)", textAlign:"center", marginBottom:8, letterSpacing:"-0.02em" }}>
+        <h3 style={{ fontSize:17, fontWeight:700, color:darkMode?"#E4E6F0":"#111827", textAlign:"center", marginBottom:8, letterSpacing:"-0.02em" }}>
           Eliminar pedido
         </h3>
-        <p style={{ fontSize:13, color:"var(--label)", textAlign:"center", lineHeight:1.6, marginBottom:6 }}>
+        <p style={{ fontSize:13, color:darkMode?"#7B7F9E":"#6B7280", textAlign:"center", lineHeight:1.6, marginBottom:6 }}>
           ¿Estás seguro que querés eliminar este pedido?
         </p>
         {/* Order summary */}
-        <div style={{ background:"var(--surface2)", border:"1px solid var(--border)", borderRadius:10, padding:"12px 16px", margin:"16px 0 24px", textAlign:"left" }}>
+        <div style={{ background:darkMode?"#252840":"#F8F9FC", border:darkMode?"1px solid #292D45":"1px solid #E5E7EB", borderRadius:10, padding:"12px 16px", margin:"16px 0 24px", textAlign:"left" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
             <span style={{ background:"var(--accent-light)", color:"var(--accent-text)", padding:"3px 10px", borderRadius:6, fontSize:12, fontWeight:600 }}>{order.component}</span>
             <PriorityBadge value={order.priority} />
           </div>
-          <div style={{ fontSize:12, color:"var(--text)", lineHeight:1.5, marginBottom:4 }}>
+          <div style={{ fontSize:12, color:darkMode?"#E4E6F0":"#111827", lineHeight:1.5, marginBottom:4 }}>
             {order.problem.length > 80 ? order.problem.slice(0,80)+"…" : order.problem}
           </div>
-          <div style={{ fontSize:11, color:"var(--muted)" }}>
+          <div style={{ fontSize:11, color:darkMode?"#4A4E6A":"#9CA3AF" }}>
             {order.requester_name} · {order.cell} · {order.created_at ? order.created_at.slice(0,10) : "—"}
           </div>
         </div>
@@ -199,7 +199,7 @@ function DeleteModal({ order, onConfirm, onCancel, deleting }) {
         {/* Actions */}
         <div style={{ display:"flex", gap:10 }}>
           <button onClick={onCancel} disabled={deleting}
-            style={{ flex:1, padding:"11px 0", background:"var(--surface2)", border:"1.5px solid var(--border)", borderRadius:10, cursor:"pointer", fontSize:14, fontWeight:600, color:"var(--label)", fontFamily:"inherit", transition:"all 0.15s" }}>
+            style={{ flex:1, padding:"11px 0", background:darkMode?"#252840":"#F8F9FC", border:darkMode?"1.5px solid #292D45":"1.5px solid #E5E7EB", borderRadius:10, cursor:"pointer", fontSize:14, fontWeight:600, color:darkMode?"#7B7F9E":"#6B7280", fontFamily:"inherit", transition:"all 0.15s" }}>
             Cancelar
           </button>
           <button onClick={onConfirm} disabled={deleting}
@@ -602,6 +602,7 @@ export default function App() {
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDeleteTarget(null)}
           deleting={deleting}
+          darkMode={darkMode}
         />
       )}
     </>
