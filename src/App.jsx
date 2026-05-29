@@ -23,8 +23,17 @@ async function sbInsert(row) {
   return res.json();
 }
 async function sbDelete(id) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, { method: "DELETE", headers: sbHeaders });
-  if (!res.ok) throw new Error(await res.text());
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
+    method: "DELETE",
+    headers: {
+      ...sbHeaders,
+      "Prefer": "return=minimal",
+    },
+  });
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(`DELETE failed (${res.status}): ${msg}`);
+  }
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -268,6 +277,7 @@ export default function App() {
   const [filterCell,      setFilterCell]      = useState("");
   const [deleteTarget,    setDeleteTarget]    = useState(null); // order to delete
   const [deleting,        setDeleting]        = useState(false);
+  const [deleteError,     setDeleteError]     = useState(false);
   const [mobileTab,       setMobileTab]       = useState("form"); // "form" | "dashboard"
   const [isMobile,        setIsMobile]        = useState(window.innerWidth < 768);
 
@@ -323,11 +333,20 @@ export default function App() {
     if (!deleteTarget || deleting) return;
     setDeleting(true);
     try {
-      if (!usingFallback) await sbDelete(deleteTarget.id);
+      if (!usingFallback) {
+        await sbDelete(deleteTarget.id);
+      }
+      // Solo actualiza el estado local si el delete en Supabase fue exitoso
       setOrders(prev => prev.filter(o => o.id !== deleteTarget.id));
       setDeleteTarget(null);
-    } catch { alert("Error al eliminar. Intentá de nuevo."); }
-    finally { setDeleting(false); }
+    } catch (e) {
+      console.error("Error al eliminar:", e);
+      setDeleteTarget(null);
+      setDeleteError(true);
+      setTimeout(() => setDeleteError(false), 4000);
+    } finally {
+      setDeleting(false);
+    }
   }
 
   const theme = {
@@ -397,6 +416,13 @@ export default function App() {
   // ── Dashboard panel ──
   const DashboardPanel = (
     <main style={{ overflowY:"auto", padding: isMobile ? "20px 16px 80px" : "26px 28px 48px" }}>
+      {/* Toast error delete */}
+      {deleteError && (
+        <div style={{ background:"#FEF2F2", border:"1px solid #FECACA", borderRadius:10, padding:"12px 16px", marginBottom:16, display:"flex", alignItems:"center", gap:10, fontSize:13, color:"#DC2626", fontWeight:500 }}>
+          <span style={{ fontSize:18 }}>⚠</span>
+          <span>No se pudo eliminar el pedido de Supabase. Verificá tu conexión o los permisos de la tabla.</span>
+        </div>
+      )}
       {/* Stat cards */}
       <div style={{ display:"grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap:12, marginBottom:24 }}>
         {[
