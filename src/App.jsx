@@ -160,11 +160,18 @@ function DeleteModal({ order, onConfirm, onCancel, deleting }) {
     <div style={{ position:"fixed", inset:0, zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}
       onClick={e => { if (e.target === e.currentTarget) onCancel(); }}>
       {/* Overlay */}
-      <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.45)", backdropFilter:"blur(4px)" }} />
-      {/* Modal */}
-      <div style={{ position:"relative", background:"var(--surface)", borderRadius:16, padding:"32px 28px", width:"100%", maxWidth:440, boxShadow:"0 24px 60px rgba(0,0,0,0.25)", border:"1px solid var(--border)", animation:"modalIn 0.2s ease" }}>
+      <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.5)", backdropFilter:"blur(4px)" }} />
+      {/* Modal — fondo blanco en light, gris oscuro en dark */}
+      <div style={{ position:"relative", background:"var(--modal-bg)", borderRadius:16, padding:"32px 28px", width:"100%", maxWidth:440, boxShadow:"0 24px 60px rgba(0,0,0,0.3)", border:"1px solid var(--border)", animation:"modalIn 0.2s ease" }}>
+        {/* Cruz de cierre */}
+        <button onClick={onCancel} disabled={deleting}
+          style={{ position:"absolute", top:14, right:14, background:"transparent", border:"none", cursor:"pointer", fontSize:18, color:"var(--muted)", lineHeight:1, padding:"4px 6px", borderRadius:6, transition:"all 0.15s" }}
+          onMouseEnter={e=>{e.currentTarget.style.background="var(--surface2)";e.currentTarget.style.color="var(--text)";}}
+          onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="var(--muted)";}}>
+          ✕
+        </button>
         {/* Icon */}
-        <div style={{ width:52, height:52, borderRadius:14, background:"#FEF2F2", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, marginBottom:20, margin:"0 auto 20px" }}>
+        <div style={{ width:52, height:52, borderRadius:14, background:"#FEF2F2", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, margin:"0 auto 20px" }}>
           🗑️
         </div>
         <h3 style={{ fontSize:17, fontWeight:700, color:"var(--text)", textAlign:"center", marginBottom:8, letterSpacing:"-0.02em" }}>
@@ -221,7 +228,7 @@ function OrderCard({ order, onDelete }) {
             #{String(order.id).padStart(3,"0")}
           </span>
           <button onClick={() => onDelete(order)}
-            style={{ background:"#FEF2F2", border:"1px solid #FECACA", borderRadius:7, padding:"5px 8px", cursor:"pointer", fontSize:13, color:"#EF4444", lineHeight:1 }}
+            style={{ background:"transparent", border:"none", padding:"4px 6px", cursor:"pointer", fontSize:15, color:"var(--muted)", lineHeight:1 }}
             title="Eliminar pedido">
             🗑
           </button>
@@ -335,6 +342,7 @@ export default function App() {
     "--accent":       darkMode ? "#818CF8" : "#4F46E5",
     "--accent-light": darkMode ? "#1C1F3A" : "#EEF2FF",
     "--accent-text":  darkMode ? "#A5B4FC" : "#4338CA",
+    "--modal-bg":     darkMode ? "#1E2235" : "#FFFFFF",
   };
 
   // ── Form panel ──
@@ -348,7 +356,7 @@ export default function App() {
         <SelectField label="Componente" value={form.component} onChange={v => setForm(f=>({...f,component:v}))} options={COMPONENTS} placeholder="Elegí un componente…" />
         <SelectField label="Tipo de Evolutivo" value={form.type} onChange={v => setForm(f=>({...f,type:v}))} options={TYPES} placeholder="Tipo de evolutivo…" />
         <TextareaField label="Tipo de Problema" value={form.problem} onChange={v => setForm(f=>({...f,problem:v}))} placeholder="Describí técnicamente el comportamiento observado…" rows={3} />
-        <TextareaField label="Necesidad o Problema" value={form.need} onChange={v => setForm(f=>({...f,need:v}))} placeholder="Contexto de negocio o experiencia de usuario afectada…" rows={3} />
+        <TextareaField label="Necesidad" value={form.need} onChange={v => setForm(f=>({...f,need:v}))} placeholder="Contexto de negocio o experiencia de usuario afectada…" rows={3} />
         {/* Nombre y Apellido */}
         <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
           <label style={{ fontSize:11, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"var(--label)" }}>
@@ -497,7 +505,7 @@ export default function App() {
                   <td style={{ padding:"13px 10px" }}>
                     <button onClick={() => setDeleteTarget(o)} title="Eliminar pedido"
                       style={{ background:"transparent", border:"1px solid transparent", borderRadius:7, padding:"5px 8px", cursor:"pointer", fontSize:14, color:"var(--muted)", transition:"all 0.15s", lineHeight:1 }}
-                      onMouseEnter={e=>{e.currentTarget.style.background="#FEF2F2";e.currentTarget.style.color="#EF4444";e.currentTarget.style.borderColor="#FECACA";}}
+                      onMouseEnter={e=>{e.currentTarget.style.background="#EEF2FF";e.currentTarget.style.color="#4F46E5";e.currentTarget.style.borderColor="#C7D2FE";}}
                       onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="var(--muted)";e.currentTarget.style.borderColor="transparent";}}>
                       🗑
                     </button>
@@ -533,7 +541,7 @@ export default function App() {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <div style={{ width:32, height:32, borderRadius:8, flexShrink:0, background:"linear-gradient(135deg, var(--accent) 0%, #7C3AED 100%)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, color:"#fff" }}>◈</div>
             <div>
-              <div style={{ fontSize: isMobile?13:14, fontWeight:700, color:"var(--text)", letterSpacing:"-0.02em", lineHeight:1.2 }}>DS Tracker Order</div>
+              <div style={{ fontSize: isMobile?15:17, fontWeight:700, color:"var(--text)", letterSpacing:"-0.02em", lineHeight:1.2 }}>DS Tracker Order</div>
               {!isMobile && <div style={{ fontSize:10, color:"var(--label)", letterSpacing:"0.06em", textTransform:"uppercase", lineHeight:1.3 }}>Evolutivos & Bugs · NOVA DS</div>}
               {!isMobile && <div style={{ fontSize:10, color:"var(--muted)", fontStyle:"italic", lineHeight:1.3 }}>El ciclo de vida de nuestros componentes, bajo control</div>}
             </div>
@@ -545,13 +553,11 @@ export default function App() {
                 {loading?"Cargando…":usingFallback?`${orders.length} · preview`:`${orders.length} · Supabase`}
               </div>
             )}
-            {!isMobile && (
-              <button onClick={async()=>{setExporting(true);await exportToExcel(orders);setExporting(false);}}
-                disabled={orders.length===0||loading||exporting}
-                style={{ background:orders.length>0&&!loading&&!exporting?"#16A34A":"var(--border)", color:orders.length>0&&!loading&&!exporting?"#fff":"var(--muted)", border:"none", borderRadius:8, padding:"6px 14px", cursor:orders.length>0&&!loading&&!exporting?"pointer":"not-allowed", fontSize:12, fontFamily:"inherit", fontWeight:600, display:"flex", alignItems:"center", gap:6, transition:"all 0.15s", boxShadow:orders.length>0&&!loading&&!exporting?"0 2px 8px rgba(22,163,74,0.2)":"none" }}>
-                {exporting?<><span style={{display:"inline-block",animation:"spin 0.7s linear infinite"}}>↻</span>Generando…</>:"⬇ Exportar .xlsx"}
-              </button>
-            )}
+            <button onClick={async()=>{setExporting(true);await exportToExcel(orders);setExporting(false);}}
+              disabled={orders.length===0||loading||exporting}
+              style={{ background:orders.length>0&&!loading&&!exporting?"#16A34A":"var(--border)", color:orders.length>0&&!loading&&!exporting?"#fff":"var(--muted)", border:"none", borderRadius:8, padding: isMobile?"6px 10px":"6px 14px", cursor:orders.length>0&&!loading&&!exporting?"pointer":"not-allowed", fontSize: isMobile?11:12, fontFamily:"inherit", fontWeight:600, display:"flex", alignItems:"center", gap:5, transition:"all 0.15s", boxShadow:orders.length>0&&!loading&&!exporting?"0 2px 8px rgba(22,163,74,0.2)":"none", whiteSpace:"nowrap" }}>
+              {exporting?<><span style={{display:"inline-block",animation:"spin 0.7s linear infinite"}}>↻</span>{isMobile?"…":"Generando…"}</>:isMobile?"⬇ Excel":"⬇ Exportar .xlsx"}
+            </button>
             <button onClick={()=>setDarkMode(d=>!d)}
               style={{ background:"var(--surface2)", border:"1px solid var(--border)", borderRadius:8, padding:"6px 12px", cursor:"pointer", fontSize:12, color:"var(--label)", fontFamily:"inherit", fontWeight:500 }}>
               {darkMode?"☀":"◑"}
@@ -567,16 +573,16 @@ export default function App() {
               {mobileTab==="form" ? FormPanel : DashboardPanel}
             </div>
             {/* Bottom tab bar */}
-            <nav style={{ position:"fixed", bottom:0, left:0, right:0, background:"var(--surface)", borderTop:"1px solid var(--border)", display:"flex", zIndex:50, height:60 }}>
+            <nav style={{ position:"fixed", bottom:0, left:0, right:0, background:"var(--surface)", borderTop:"1px solid var(--border)", display:"flex", zIndex:50, height:68 }}>
               {[
                 { id:"form",      label:"Nuevo Pedido", icon:"✦" },
                 { id:"dashboard", label:"Dashboard",    icon:"◈" },
               ].map(tab => (
                 <button key={tab.id} onClick={()=>setMobileTab(tab.id)}
-                  style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2, background:"transparent", border:"none", cursor:"pointer", fontFamily:"inherit", color:mobileTab===tab.id?"var(--accent)":"var(--muted)", transition:"color 0.15s" }}>
-                  <span style={{ fontSize:16 }}>{tab.icon}</span>
-                  <span style={{ fontSize:10, fontWeight:mobileTab===tab.id?700:500 }}>{tab.label}</span>
-                  {mobileTab===tab.id && <span style={{ position:"absolute", bottom:0, width:48, height:2, background:"var(--accent)", borderRadius:2 }} />}
+                  style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:4, background:"transparent", border:"none", cursor:"pointer", fontFamily:"inherit", color:mobileTab===tab.id?"var(--accent)":"var(--muted)", transition:"color 0.15s", paddingBottom:4 }}>
+                  <span style={{ fontSize:20 }}>{tab.icon}</span>
+                  <span style={{ fontSize:12, fontWeight:mobileTab===tab.id?700:600, letterSpacing:"0.01em" }}>{tab.label}</span>
+                  {mobileTab===tab.id && <span style={{ position:"absolute", bottom:0, width:56, height:3, background:"var(--accent)", borderRadius:2 }} />}
                 </button>
               ))}
             </nav>
