@@ -180,8 +180,8 @@ function DeleteModal({ order, onConfirm, onCancel, deleting, darkMode }) {
           ✕
         </button>
         {/* Icon */}
-        <div style={{ width:52, height:52, borderRadius:14, background:"#FEF2F2", display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, margin:"0 auto 20px" }}>
-          🗑️
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px" }}>
+          <i className="fa-solid fa-trash" style={{ fontSize:40, color:"#EF4444" }}></i>
         </div>
         <h3 style={{ fontSize:17, fontWeight:700, color:darkMode?"#E4E6F0":"#111827", textAlign:"center", marginBottom:8, letterSpacing:"-0.02em" }}>
           Eliminar pedido
@@ -192,7 +192,7 @@ function DeleteModal({ order, onConfirm, onCancel, deleting, darkMode }) {
         {/* Order summary */}
         <div style={{ background:darkMode?"#252840":"#F8F9FC", border:darkMode?"1px solid #292D45":"1px solid #E5E7EB", borderRadius:10, padding:"12px 16px", margin:"16px 0 24px", textAlign:"left" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
-            <span style={{ background:"var(--accent-light)", color:"var(--accent-text)", padding:"3px 10px", borderRadius:6, fontSize:12, fontWeight:600 }}>{order.component}</span>
+            <span style={{ background:darkMode?"#1C1F3A":"#EEF2FF", color:darkMode?"#A5B4FC":"#4338CA", padding:"3px 10px", borderRadius:6, fontSize:12, fontWeight:600 }}>{order.component}</span>
             <PriorityBadge value={order.priority} />
           </div>
           <div style={{ fontSize:12, color:darkMode?"#E4E6F0":"#111827", lineHeight:1.5, marginBottom:4 }}>
@@ -237,9 +237,9 @@ function OrderCard({ order, onDelete }) {
             #{String(order.id).padStart(3,"0")}
           </span>
           <button onClick={() => onDelete(order)}
-            style={{ background:"transparent", border:"none", padding:"4px 6px", cursor:"pointer", fontSize:15, color:"var(--muted)", lineHeight:1 }}
+            style={{ background:"transparent", border:"none", padding:"4px 6px", cursor:"pointer", lineHeight:1 }}
             title="Eliminar pedido">
-            🗑
+            <i className="fa-solid fa-trash" style={{ fontSize:14, color:"var(--muted)" }}></i>
           </button>
         </div>
       </div>
@@ -530,10 +530,10 @@ export default function App() {
                   <td style={{ padding:"13px 14px" }}><span style={{ fontSize:11, fontFamily:"DM Mono, monospace", color:"var(--muted)", whiteSpace:"nowrap" }}>{o.created_at?o.created_at.slice(0,10):"—"}</span></td>
                   <td style={{ padding:"13px 10px" }}>
                     <button onClick={() => setDeleteTarget(o)} title="Eliminar pedido"
-                      style={{ background:"transparent", border:"1px solid transparent", borderRadius:7, padding:"5px 8px", cursor:"pointer", fontSize:14, color:"var(--muted)", transition:"all 0.15s", lineHeight:1 }}
-                      onMouseEnter={e=>{e.currentTarget.style.background="#EEF2FF";e.currentTarget.style.color="#4F46E5";e.currentTarget.style.borderColor="#C7D2FE";}}
-                      onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="var(--muted)";e.currentTarget.style.borderColor="transparent";}}>
-                      🗑
+                      style={{ background:"transparent", border:"1px solid transparent", borderRadius:7, padding:"6px 9px", cursor:"pointer", fontSize:13, color:"var(--muted)", transition:"all 0.15s", lineHeight:1 }}
+                      onMouseEnter={e=>{e.currentTarget.style.background="#EEF2FF";e.currentTarget.querySelector("i").style.color="#4F46E5";e.currentTarget.style.borderColor="#C7D2FE";}}
+                      onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.querySelector("i").style.color="";e.currentTarget.style.borderColor="transparent";}}>
+                      <i className="fa-solid fa-trash" style={{ fontSize:13, color:"var(--muted)", transition:"color 0.15s" }}></i>
                     </button>
                   </td>
                 </tr>
@@ -549,6 +549,8 @@ export default function App() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500;600&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
         ::-webkit-scrollbar{width:5px;height:5px}
@@ -569,7 +571,6 @@ export default function App() {
             <div>
               <div style={{ fontSize: isMobile?15:17, fontWeight:700, color:"var(--text)", letterSpacing:"-0.02em", lineHeight:1.2 }}>DS Tracker Order</div>
               {!isMobile && <div style={{ fontSize:10, color:"var(--label)", letterSpacing:"0.06em", textTransform:"uppercase", lineHeight:1.3 }}>Evolutivos & Bugs · NOVA DS</div>}
-              {!isMobile && <div style={{ fontSize:10, color:"var(--muted)", fontStyle:"italic", lineHeight:1.3 }}>El ciclo de vida de nuestros componentes, bajo control</div>}
             </div>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
